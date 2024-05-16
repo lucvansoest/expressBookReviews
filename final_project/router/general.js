@@ -33,45 +33,73 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  return res.send(books);
+
+  const get_books = new Promise((resolve, reject) => {
+    resolve(res.send(books));
+  });
+
+  get_books.then(() => console.log("Promise for Task 10 resolved"));
+
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-    const isbn = req.params.isbn;
-    if (isbn in books) 
-        res.send(books[isbn]);
-    else
-        res.status(404).json({message: `Book with isbn ${isbn} not found!`}); 
+
+    const get_book = new Promise((resolve, reject) => {
+        const isbn = req.params.isbn;
+        if (isbn in books) 
+            resolve(res.send(books[isbn]));
+        else
+            reject(`Book with isbn ${isbn} not found!`);         
+      });
+    
+    get_book.then(() => console.log("Promise for Task 11 resolved"));
+
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author;
-    const bookISBNs = Object.keys(books)
-    let bookFound = false;
-    bookISBNs.forEach((isbn) => {
-        if (books[isbn].author === author) { 
-            res.send(books[isbn]);
-            bookFound = true;
+
+    const get_book = new Promise((resolve, reject) => {
+
+        const author = req.params.author;
+        const bookISBNs = Object.keys(books)
+        let bookFound = false;
+        bookISBNs.forEach((isbn) => {
+            if (books[isbn].author === author) { 
+                resolve(res.send(books[isbn]));
+                bookFound = true;
+            }
+        });
+        if (!bookFound) {
+            reject(`Book with author '${author}' not found!`);
         }
-    });
-    if (!bookFound) res.status(404).json({message: `Book with author '${author}' not found!`}); 
+      });
+    
+    get_book.then(() => console.log("Promise for Task 12 resolved"));
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title;
-    const bookISBNs = Object.keys(books)
-    let bookFound = false;
-    bookISBNs.forEach((isbn) => {
-        if (books[isbn].title === title) 
-        {
-            res.send(books[isbn]);
-            bookFound = true;
+
+
+    const get_book = new Promise((resolve, reject) => {
+
+        const title = req.params.title;
+        const bookISBNs = Object.keys(books)
+        let bookFound = false;
+        bookISBNs.forEach((isbn) => {
+            if (books[isbn].title === title) { 
+                resolve(res.send(books[isbn]));
+                bookFound = true;
+            }
+        });
+        if (!bookFound) {
+            reject(`Book with title '${title}' not found!`);
         }
-    });
-    if (!bookFound) res.status(404).json({message: "Book with title '${title}' not found!"}); 
+      });
+    
+    get_book.then(() => console.log("Promise for Task 13 resolved"));
 });
 
 //  Get book review
